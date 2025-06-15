@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/peach_cream"
+    tools:context=".ui.FavoritesFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/favorites_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:layout_alignParentTop="true">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/favorites_LBL_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/favorites"
+            android:padding="20dp"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:textColor="@color/olive_green"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Section Subtitle -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/MyFavorites_LBL_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="@string/my_favorites"
+            android:textColor="@color/soft_apricot"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/favorites_LBL_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fav_RV_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/favorites_header"
+        android:layout_marginTop="16dp" />
+
+</RelativeLayout>

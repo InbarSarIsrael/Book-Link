@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/addBook_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/peach_cream"
+    android:padding="20dp"
+    android:paddingBottom="80dp"
+    android:fillViewport="true"
+    tools:context=".ui.AddFragment">
+
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical">
+
+<!-- Image upload placeholder -->
+<FrameLayout
+    android:id="@+id/addBook_image_container"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:background="@color/terracotta"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/addBook_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/upload_image"
+        android:src="@drawable/unavailable_photo" />
+
+    <TextView
+        android:id="@+id/addBook_upload_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/upload_image"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_gravity="center" />
+</FrameLayout>
+
+<!-- Book Title -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/addBook_title_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:boxStrokeColor="@color/olive_green"
+    app:hintTextColor="@color/olive_green"
+    android:layout_marginTop="16dp">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/addBook_title_edt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/olive_green"
+        android:hint="@string/book_title" />
+</com.google.android.material.textfield.TextInputLayout>
+
+<!-- Author -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/addBook_author_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:boxStrokeColor="@color/olive_green"
+    app:hintTextColor="@color/olive_green"
+    android:layout_marginTop="12dp">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/addBook_author_edt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/olive_green"
+        android:hint="@string/author" />
+</com.google.android.material.textfield.TextInputLayout>
+
+<!-- Genre -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/addBook_genre_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:boxStrokeColor="@color/olive_green"
+    app:hintTextColor="@color/olive_green"
+    android:layout_marginTop="12dp">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/addBook_genre_edt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/genre"
+        android:textColor="@color/olive_green"
+        android:inputType="text" />
+</com.google.android.material.textfield.TextInputLayout>
+
+<!-- Release Date -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/addBook_releaseDate_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:boxStrokeColor="@color/olive_green"
+    app:hintTextColor="@color/olive_green"
+    android:layout_marginTop="12dp">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/addBook_releaseDate_edt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/release_date"
+        android:focusable="false"
+        android:clickable="true"
+        android:textColor="@color/olive_green" />
+</com.google.android.material.textfield.TextInputLayout>
+
+<!-- Page Count -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/addBook_pages_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:boxStrokeColor="@color/olive_green"
+    app:hintTextColor="@color/olive_green"
+    android:layout_marginTop="12dp">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/addBook_pages_edt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/page_count"
+        android:textColor="@color/olive_green"
+        android:inputType="number" />
+</com.google.android.material.textfield.TextInputLayout>
+
+<!-- Summary -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/addBook_summary_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:boxStrokeColor="@color/olive_green"
+    app:hintTextColor="@color/olive_green"
+    android:layout_marginTop="12dp">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/addBook_summary_edt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/summary"
+        android:minLines="3"
+        android:maxLines="5"
+        android:textColor="@color/olive_green"
+        android:inputType="textMultiLine" />
+</com.google.android.material.textfield.TextInputLayout>
+
+<!-- User Review -->
+<com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/addBook_review_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:boxStrokeColor="@color/olive_green"
+    app:hintTextColor="@color/olive_green"
+    android:layout_marginTop="12dp">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/addBook_review_edt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/your_review"
+        android:minLines="3"
+        android:maxLines="5"
+        android:textColor="@color/olive_green"
+        android:inputType="textMultiLine" />
+</com.google.android.material.textfield.TextInputLayout>
+
+<!-- Add Button -->
+<Button
+    android:id="@+id/addBook_btn"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="24dp"
+    android:backgroundTint="@color/terracotta"
+    android:textColor="@color/olive_green"
+    android:text="@string/add_it" />
+
+</LinearLayout>
+    </ScrollView>

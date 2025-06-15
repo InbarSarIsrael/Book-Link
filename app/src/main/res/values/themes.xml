@@ -6,4 +6,28 @@
     </style>
 
     <style name="Theme.BookLink" parent="Base.Theme.BookLink" />
+
+    <!-- Custom Login Theme -->
+    <style name="LoginTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- General background -->
+        <item name="android:windowBackground">@color/peach_cream</item>
+        <item name="colorSurface">@color/peach_cream</item>
+
+        <!-- Primary colors and buttons -->
+        <item name="colorPrimary">@color/terracotta</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorPrimaryVariant">@color/terracotta</item>
+
+        <!-- Text color -->
+        <item name="android:textColor">@color/olive_green</item>
+
+        <!-- Input fields and accent -->
+        <item name="colorControlActivated">@color/olive_green</item>
+        <item name="colorControlNormal">@color/olive_green</item>
+        <item name="colorAccent">@color/olive_green</item>
+
+        <!-- FirebaseUI header text -->
+        <item name="android:textColorPrimary">@color/olive_green</item>
+    </style>
+
 </resources>

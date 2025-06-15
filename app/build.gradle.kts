@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -8,7 +9,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.booklink"
+        applicationId = "com.example.booklink1"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
@@ -33,6 +34,10 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -45,4 +50,18 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation (libs.glide)
+
+    //FireBase Bom
+    implementation(libs.firebase.bom)
+    implementation(libs.firebase.analytics)
+
+    //AuthUI:
+    implementation(libs.firebase.ui.auth)
+
+    //Realtime DB:
+    implementation(libs.firebase.database)
+
+    //Storage
+    implementation(libs.firebase.storage)
 }

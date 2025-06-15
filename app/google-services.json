@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "997067218017",
+    "firebase_url": "https://booklink-a6428-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "booklink-a6428",
+    "storage_bucket": "booklink-a6428.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997067218017:android:ce33c1258a4c1319de5e20",
+        "android_client_info": {
+          "package_name": "com.example.booklink1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "997067218017-af38eek4bgmljbib5nljpkitq3gss502.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.booklink1",
+            "certificate_hash": "bcfd230313b4e195201f8037bc92bf6cbe7a8e88"
+          }
+        },
+        {
+          "client_id": "997067218017-c8k5rplld07c8fnlgophe2ne6o7s7khe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxI3fWJJOKdssA3nUaC7rlC6LBgumTnfc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997067218017-c8k5rplld07c8fnlgophe2ne6o7s7khe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
