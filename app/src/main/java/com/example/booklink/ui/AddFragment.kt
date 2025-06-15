@@ -1,10 +1,7 @@
 package com.example.booklink.ui
 
-import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +14,10 @@ import com.example.booklink.model.Book
 import com.example.booklink.model.DataManager
 import com.google.firebase.auth.FirebaseAuth
 import android.app.DatePickerDialog
+import androidx.core.net.toUri
 import java.util.Calendar
+import java.util.Locale
+import androidx.activity.result.contract.ActivityResultContracts
 
 class AddFragment : Fragment() {
 
@@ -25,11 +25,21 @@ class AddFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private var imageUri: Uri? = null
+    private var imageUri: Uri? = null // Selected image URI
 
-    private var bookToEdit: Book? = null
+    private var bookToEdit: Book? = null // Book passed for editing (null if creating a new book)
 
-    private val PICK_IMAGE_REQUEST = 1001
+    // Launcher for image picking using the modern Activity Result API
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            imageUri = uri
+            Glide.with(this)
+                .load(imageUri)
+                .centerCrop()
+                .into(binding.addBookImage)
+            binding.addBookUploadText.visibility = View.GONE
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,18 +52,23 @@ class AddFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        bookToEdit = arguments?.getSerializable(ARG_BOOK) as? Book
+        // Retrieve book if passed as argument for editing
+        @Suppress("DEPRECATION") // For backward compatibility with minSdk < 33
+        bookToEdit = arguments?.getParcelable(ARG_BOOK)
+
         bookToEdit?.let { populateFieldsForEditing(it) }
 
-
+        // Image picker trigger
         binding.addBookImageContainer.setOnClickListener {
             openImageChooser()
         }
 
+        // Submit button
         binding.addBookBtn.setOnClickListener {
             addBook()
         }
 
+        // Show date picker on release date field click
         binding.addBookReleaseDateEdt.apply {
             isFocusable = false
             isClickable = true
@@ -65,7 +80,11 @@ class AddFragment : Fragment() {
 
                 val datePickerDialog = DatePickerDialog(requireContext(),
                     { _, selectedYear, selectedMonth, selectedDay ->
-                        val dateStr = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear)
+                        val dateStr = String.format(
+                            Locale.getDefault(),
+                            "%02d/%02d/%04d",
+                            selectedDay, selectedMonth + 1, selectedYear
+                        )
                         binding.addBookReleaseDateEdt.setText(dateStr)
                     }, year, month, day
                 )
@@ -74,9 +93,10 @@ class AddFragment : Fragment() {
         }
     }
 
+     // Fill UI fields with data of the book being edited
     private fun populateFieldsForEditing(book: Book) {
         binding.addBookTitleEdt.setText(book.name)
-        binding.addBookAuthorEdt.setText(book.writer)
+        binding.addBookAuthorEdt.setText(book.author)
         binding.addBookGenreEdt.setText(book.genre.joinToString(", "))
         binding.addBookPagesEdt.setText(book.length.toString())
         binding.addBookSummaryEdt.setText(book.summary)
@@ -84,54 +104,42 @@ class AddFragment : Fragment() {
         binding.addBookReleaseDateEdt.setText(book.releaseDate)
 
         if (book.poster.isNotBlank()) {
-            imageUri = Uri.parse(book.poster)
-
+            imageUri = book.poster.toUri()
             Glide.with(this)
                 .load(imageUri)
                 .centerCrop()
                 .into(binding.addBookImage)
-
             binding.addBookUploadText.visibility = View.GONE
         }
 
-        binding.addBookBtn.text = "Update Book"
+        binding.addBookBtn.text = getString(R.string.update_book)
     }
 
-
+    // Opens image picker from gallery
     private fun openImageChooser() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(intent, PICK_IMAGE_REQUEST)
+        pickImageLauncher.launch("image/*")
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
-            imageUri = data?.data
-            Glide.with(this)
-                .load(imageUri)
-                .centerCrop()
-                .into(binding.addBookImage)
-            binding.addBookUploadText.visibility = View.GONE
-        }
-    }
-
+     //Validates input and adds or updates a book in the database
     private fun addBook() {
         val name = binding.addBookTitleEdt.text.toString().trim()
-        val writer = binding.addBookAuthorEdt.text.toString().trim()
+        val author = binding.addBookAuthorEdt.text.toString().trim()
         val genreText = binding.addBookGenreEdt.text.toString().trim()
         val pagesText = binding.addBookPagesEdt.text.toString().trim()
         val summary = binding.addBookSummaryEdt.text.toString().trim()
         val userReview = binding.addBookReviewEdt.text.toString().trim()
         val releaseDateText = binding.addBookReleaseDateEdt.text.toString().trim()
 
-        if (name.isEmpty() || writer.isEmpty() || genreText.isEmpty() || pagesText.isEmpty() || summary.isEmpty() || releaseDateText.isEmpty()) {
+        // Input validation
+        if (name.isEmpty() || author.isEmpty() || genreText.isEmpty() || pagesText.isEmpty()
+            || summary.isEmpty() || releaseDateText.isEmpty()) {
             Toast.makeText(requireContext(), "Please fill all required fields", Toast.LENGTH_SHORT).show()
             return
         }
 
         val pages = try {
             pagesText.toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             Toast.makeText(requireContext(), "Invalid page count", Toast.LENGTH_SHORT).show()
             return
         }
@@ -139,13 +147,15 @@ class AddFragment : Fragment() {
         val genres = genreText.split(",").map { it.trim() }.filter { it.isNotEmpty() }
         val userId = getCurrentUserId()
 
+        // Upload image to Firebase before saving the book
         uploadImageToFirebase { uploadedImageUrl ->
             val posterUrl = uploadedImageUrl ?: ""
 
             if (bookToEdit != null) {
+                // Update existing book
                 val book = bookToEdit!!
                 book.name = name
-                book.writer = writer
+                book.author = author
                 book.genre = genres
                 book.length = pages
                 book.summary = summary
@@ -156,10 +166,11 @@ class AddFragment : Fragment() {
                 DataManager.addUserBook(userId, book)
                 Toast.makeText(requireContext(), "Book updated!", Toast.LENGTH_SHORT).show()
             } else {
+                // Create new book
                 val newBook = Book(
                     poster = posterUrl,
                     name = name,
-                    writer = writer,
+                    author = author,
                     genre = genres,
                     length = pages,
                     summary = summary,
@@ -175,6 +186,7 @@ class AddFragment : Fragment() {
 
             clearFields()
 
+            // Return to profile screen
             parentFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment_container, ProfileFragment())
                 .addToBackStack(null)
@@ -182,11 +194,13 @@ class AddFragment : Fragment() {
         }
     }
 
+     //Returns current Firebase user ID
     private fun getCurrentUserId(): String {
         val currentUser = FirebaseAuth.getInstance().currentUser
         return currentUser?.uid ?: ""
     }
 
+     // Clears all input fields
     private fun clearFields() {
         binding.addBookImage.setImageResource(android.R.color.transparent)
         binding.addBookUploadText.visibility = View.VISIBLE
@@ -196,21 +210,24 @@ class AddFragment : Fragment() {
         binding.addBookPagesEdt.text?.clear()
         binding.addBookSummaryEdt.text?.clear()
         binding.addBookReviewEdt.text?.clear()
+        binding.addBookReleaseDateEdt.text?.clear()
         imageUri = null
     }
 
     companion object {
         private const val ARG_BOOK = "book_to_edit"
 
+        // Creates a new instance of AddFragment with a Book (for editing)
         fun newInstance(book: Book): AddFragment {
             val fragment = AddFragment()
             val args = Bundle()
-            args.putSerializable(ARG_BOOK, book)
+            args.putParcelable(ARG_BOOK, book)
             fragment.arguments = args
             return fragment
         }
     }
 
+    // Uploads selected image to Firebase Storage
     private fun uploadImageToFirebase(onComplete: (String?) -> Unit) {
         val image = imageUri ?: return onComplete(null)
 

@@ -1,47 +1,30 @@
 package com.example.booklink.model
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-class Book() : Serializable {
-    var poster: String = ""
-    var name: String = ""
-    var writer: String = ""
-    var genre: List<String> = emptyList()
-    var length: Int = 0
-    var summary: String = ""
-    var userReview: String = ""
-    var releaseDate: String = ""
-    var rating: Float = 0.0f
-    var isFavorite: Boolean = false
-    var isCollapsed: Boolean = false
-    var timestamp: Long = 0L
+/**
+ * Data model representing a book in the app
+ */
+@Parcelize
+data class Book(
+    var poster: String = "",           // URL to the book's cover image (hosted on Firebase Storage)
+    var name: String = "",             // Title of the book
+    var author: String = "",           // Author's name
+    var genre: List<String> = emptyList(),  // List of genres
+    var length: Int = 0,               // Number of pages
+    var summary: String = "",          // Summary/overview of the book
+    var userReview: String = "",       // Personal review written by the user
+    var releaseDate: String = "",      // Release date
+    var rating: Float = 0.0f,          // Average user rating (0.0–5.0)
+    var isFavorite: Boolean = false,   // True if the user marked it as favorite
+    var isCollapsed: Boolean = false,  // Used for toggling the UI summary expansion
+    var timestamp: Long = 0L           // Time of creation (used for sorting/display)
+) : Parcelable {
 
-    constructor(
-        poster: String,
-        name: String,
-        writer: String,
-        genre: List<String>,
-        length: Int,
-        summary: String,
-        userReview: String,
-        releaseDate: String,
-        rating: Float,
-        isFavorite: Boolean,
-        timestamp: Long
-    ) : this() {
-        this.poster = poster
-        this.name = name
-        this.writer = writer
-        this.genre = genre
-        this.length = length
-        this.summary = summary
-        this.userReview = userReview
-        this.releaseDate = releaseDate
-        this.rating = rating
-        this.isFavorite = isFavorite
-        this.timestamp = timestamp
-    }
-
+    /**
+     * Toggles the collapsed state of the summary section (for UI)
+     */
     fun toggleCollapse() {
         isCollapsed = !isCollapsed
     }

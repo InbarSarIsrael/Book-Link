@@ -34,25 +34,29 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Set up list of user's added books
         setupRecyclerView()
         setupAdapterCallbacks()
 
+        // Fetch and observe the current user's added books
         val userId = getCurrentUserId()
         DataManager.fetchUserAddedBooks(userId)
         DataManager.userAddedBooksData.observe(viewLifecycleOwner) { addedBooks ->
             bookAdapter.submitList(addedBooks)
         }
 
+        // Handle logout button click
         binding.profileBTNLogout.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
 
+            // Clear back stack and redirect to login screen
             val intent = Intent(requireContext(), LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
-
     }
 
+    // Configures RecyclerView with the BookProfileAdapter
     private fun setupRecyclerView() {
         bookAdapter = BookProfileAdapter()
         binding.profileRVList.apply {
@@ -61,21 +65,22 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    // Handles user interactions with each book (favorite/edit)
     private fun setupAdapterCallbacks() {
         bookAdapter.bookCallback = object : BookCallback {
             override fun favoriteButtonClicked(book: Book, position: Int) {
+                // Toggle favorite status and update UI
                 book.isFavorite = !book.isFavorite
                 bookAdapter.notifyItemChanged(position)
                 DataManager.toggleFavorite(getCurrentUserId(), book)
             }
 
-            // Required to implement the full BookCallback interface,
-            // even if rating changes are not needed in this fragment.
             override fun ratingChanged(book: Book, newRating: Float) {
-                // Not used in ProfileFragment
+                // Not needed in ProfileFragment
             }
 
             override fun editButtonClicked(book: Book) {
+                // Open AddFragment with the selected book for editing
                 val fragment = AddFragment.newInstance(book)
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.main_fragment_container, fragment)
@@ -90,9 +95,9 @@ class ProfileFragment : Fragment() {
         _binding = null
     }
 
+    // Returns the current logged-in user's ID
     private fun getCurrentUserId(): String {
         val currentUser = FirebaseAuth.getInstance().currentUser
         return currentUser?.uid ?: ""
     }
 }
-

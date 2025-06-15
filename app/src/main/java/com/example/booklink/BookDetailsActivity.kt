@@ -18,9 +18,7 @@ class BookDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBookDetailsBinding
 
     private lateinit var commentAdapter: CommentAdapter
-
-    private lateinit var bookId: String
-
+    private lateinit var bookId: String // Used to identify book-related comments
     private val comments = mutableListOf<Comment>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,27 +26,33 @@ class BookDetailsActivity : AppCompatActivity() {
         binding = ActivityBookDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val book = intent.getSerializableExtra("book") as? Book
-        book?.let {
-            displayBookData(it)
-        }
+        // Retrieve Book object from Intent (Parcelable)
+        @Suppress("DEPRECATION") // For API < 33
+        val book = intent.getParcelableExtra<Book>("book")
 
+        // Show book details if available
+        book?.let { displayBookData(it) }
+
+        // Set back button action
         binding.bookDetailsBTNBack.setOnClickListener {
             finish()
         }
 
+        // Handle comment submission
         binding.bookDetailsBTNSendComment.setOnClickListener {
-            book?.let { submitComment(it) }
+            book?.let { submitComment() }
         }
 
+        // Set up RecyclerView for displaying comments
         commentAdapter = CommentAdapter(comments)
         binding.bookDetailsRVComments.layoutManager = LinearLayoutManager(this)
         binding.bookDetailsRVComments.adapter = commentAdapter
     }
 
+    // Display book info in UI and start loading comments
     private fun displayBookData(book: Book) {
         binding.bookDetailsLBLName.text = getString(R.string.book_name_label, book.name)
-        binding.bookDetailsLBLAuthor.text = getString(R.string.author_label, book.writer)
+        binding.bookDetailsLBLAuthor.text = getString(R.string.author_label, book.author)
         binding.bookDetailsLBLPages.text = getString(R.string.pages_label, book.length)
         binding.bookDetailsLBLGenre.text = getString(R.string.genres_label, book.genre.joinToString(", "))
         binding.bookDetailsLBLRelease.text = getString(R.string.release_label, book.releaseDate)
@@ -56,22 +60,25 @@ class BookDetailsActivity : AppCompatActivity() {
         binding.bookDetailsLBLSummary.text = getString(R.string.summary_label, book.summary)
         binding.bookDetailsLBLUserReview.text = getString(R.string.review_label, book.userReview)
 
+        // Load book poster image using Glide
         Glide.with(this)
             .load(book.poster)
             .into(binding.bookDetailsIMGPoster)
 
+        // Use sanitized book name as ID key for comments
         bookId = book.name.replace(" ", "_")
         fetchComments(bookId)
     }
 
-    private fun submitComment(book: Book) {
+    // Handle user comment submission
+    private fun submitComment() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val commentText = binding.bookDetailsEDTComment.text.toString().trim()
         if (commentText.isBlank()) return
 
         val username = FirebaseAuth.getInstance().currentUser?.displayName ?: "Unknown"
-
         val timestamp = System.currentTimeMillis()
+
         val comment = Comment(userId, username, commentText, timestamp)
 
         FirebaseDatabase.getInstance().reference
@@ -84,6 +91,7 @@ class BookDetailsActivity : AppCompatActivity() {
             }
     }
 
+    // Load comments from Firebase and update the list
     private fun fetchComments(bookId: String) {
         Log.d("COMMENTS", "Fetching comments for $bookId")
 
@@ -95,5 +103,4 @@ class BookDetailsActivity : AppCompatActivity() {
             commentAdapter.notifyDataSetChanged()
         }
     }
-
 }

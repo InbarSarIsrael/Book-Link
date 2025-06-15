@@ -8,17 +8,19 @@ import com.google.firebase.database.ValueEventListener
 
 object DataManager {
 
+    // Reference to the root of the Realtime Database
     private val database = FirebaseDatabase.getInstance().reference
 
-    // 1. All books (all posts from all users)
+    // LiveData for observing all books from all users
     val allBooksData = MutableLiveData<List<Book>>()
 
-    // 2. Books added by the current user (initially empty)
+    // LiveData for observing user's favorite books
     val userFavoritesData = MutableLiveData<List<Book>>()
 
-    // 3. User's favorite books (using a Set to avoid duplicates)
+    // LiveData for observing books added by the current user
     val userAddedBooksData = MutableLiveData<List<Book>>()
 
+    // Fetches all books and marks those that are in the user's favorites
     fun fetchAllBooks(userId: String) {
         val booksRef = database.child("books")
         val favsRef = database.child("users").child(userId).child("favorites")
@@ -41,6 +43,7 @@ object DataManager {
         }
     }
 
+    // Fetches all books marked as favorites by the user
     fun fetchUserFavorites(userId: String) {
         database.child("users").child(userId).child("favorites")
             .addValueEventListener(object : ValueEventListener {
@@ -59,6 +62,7 @@ object DataManager {
             })
     }
 
+    // Fetches books added by the user and indicates favorites
     fun fetchUserAddedBooks(userId: String) {
         val addedRef = database.child("users").child(userId).child("addedBooks")
         val favsRef = database.child("users").child(userId).child("favorites")
@@ -85,7 +89,7 @@ object DataManager {
         }
     }
 
-
+    // Adds/removes a book from the user's favorites and refreshes UI
     fun toggleFavorite(userId: String, book: Book) {
         val favRef = database.child("users").child(userId).child("favorites").child(book.name)
         favRef.get().addOnSuccessListener {
@@ -107,11 +111,13 @@ object DataManager {
         }
     }
 
+    // Saves a user's rating for a specific book
     fun saveUserRating(userId: String, bookId: String, rating: Float) {
         val dbRef = FirebaseDatabase.getInstance().getReference("ratings")
         dbRef.child(bookId).child(userId).setValue(rating)
     }
 
+    // Calculates and updates the average rating for a book in all relevant places
     fun updateAverageRating(bookId: String) {
         val ratingsRef = FirebaseDatabase.getInstance().getReference("ratings").child(bookId)
         ratingsRef.get().addOnSuccessListener { snapshot ->
@@ -127,9 +133,11 @@ object DataManager {
             if (count > 0) {
                 val average = total / count
 
+                // Update book in global list
                 FirebaseDatabase.getInstance().getReference("books").child(bookId)
                     .child("rating").setValue(average)
 
+                // Update book in users' personal lists
                 FirebaseDatabase.getInstance().getReference("users")
                     .get().addOnSuccessListener { usersSnapshot ->
                         for (userSnapshot in usersSnapshot.children) {
@@ -148,6 +156,7 @@ object DataManager {
         }
     }
 
+    // Listens for live updates to average ratings and updates the UI
     fun listenToAverageRatings() {
         val dbRef = FirebaseDatabase.getInstance().getReference("ratings")
         dbRef.addValueEventListener(object : ValueEventListener {
@@ -176,6 +185,7 @@ object DataManager {
         })
     }
 
+    // Fetches the average rating for a specific book and invokes a callback
     fun fetchAverageRating(bookId: String, callback: (Float) -> Unit) {
         val dbRef = FirebaseDatabase.getInstance().getReference("ratings").child(bookId)
         dbRef.get().addOnSuccessListener { snapshot ->
@@ -193,6 +203,7 @@ object DataManager {
         }
     }
 
+    // Adds a new book posted by the user to both user-specific and global paths
     fun addUserBook(userId: String, book: Book) {
         book.timestamp = System.currentTimeMillis()
 
@@ -200,14 +211,14 @@ object DataManager {
         database.child("books").child(book.name).setValue(book)
     }
 
-
+    // Creates a predefined list of books (used on first load or for testing)
     fun generateInitialBooks(): List<Book> {
         val books = mutableListOf<Book>()
         books.add(
             Book(
                 poster = "https://covers.shakespeareandcompany.com/97818402/9781840221930.jpg",
                 name = "Pride and Prejudice",
-                writer = "Jane Austen",
+                author = "Jane Austen",
                 genre = listOf("Romance", "Historical Fiction", "Satire"),
                 length = 279,
                 summary = "Pride and Prejudice by Jane Austen is a classic novel about love, social class, and personal growth. The story follows Elizabeth Bennet, a smart and independent young woman, as she navigates family pressures and societal expectations in 19th-century England. She meets the proud and wealthy Mr. Darcy, and their initial misunderstandings slowly turn into mutual respect and love. Through humor and sharp observations, the novel explores themes of pride, prejudice, and the importance of looking beyond first impressions.",
@@ -216,14 +227,13 @@ object DataManager {
                 rating = 4f,
                 isFavorite = false,
                 timestamp = 1746818400000
-
             )
         )
         books.add(
             Book(
                 poster = "https://m.media-amazon.com/images/I/712zD1rKTUL._UF1000,1000_QL80_.jpg",
                 name = "It Ends With Us",
-                writer = "Colleen Hoover",
+                author = "Colleen Hoover",
                 genre = listOf("Romance", "Drama", "Psychological"),
                 length = 376,
                 summary = "Lily falls in love with Ryle, a successful doctor, but their relationship turns dark. When her first love, Atlas, reappears, she must make a difficult choice about her future and break a cycle of abuse.",
@@ -238,7 +248,7 @@ object DataManager {
             Book(
                 poster = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1348257965i/104979.jpg",
                 name = "Journey of Souls",
-                writer = "Michael Newton",
+                author = "Michael Newton",
                 genre = listOf("Spirituality", "Non-fiction", "Psychology"),
                 length = 278,
                 summary = "A groundbreaking exploration of what happens to souls between lives, based on case studies from hypnotherapy sessions with patients who recalled their life between lives.",
@@ -253,7 +263,7 @@ object DataManager {
             Book(
                 poster = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1674743453i/86767939.jpg",
                 name = "Terms and Conditions",
-                writer = "Lauren Asher",
+                author = "Lauren Asher",
                 genre = listOf("Romance", "Contemporary", "New Adult"),
                 length = 448,
                 summary = "Declan needs a wife to secure his role as CEO. Iris, his assistant, becomes the unexpected choice. Their fake marriage starts to feel real as emotions and attraction grow.",
@@ -268,7 +278,7 @@ object DataManager {
             Book(
                 poster = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1671865608i/74045390.jpg",
                 name = "The Fine Print",
-                writer = "Lauren Asher",
+                author = "Lauren Asher",
                 genre = listOf("Romance", "New Adult", "Contemporary"),
                 length = 400,
                 summary = "Rowan, a theme park mogul, must work with Zara, a spirited employee, to create new magic — but personal secrets and emotional walls make the journey complicated.",

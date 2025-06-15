@@ -14,16 +14,18 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- 1. Poster Section -->
+        <!-- Book poster image -->
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/bookDetails_IMG_poster"
-            android:layout_width="200dp"
-            android:layout_height="300dp"
+            android:layout_width="160dp"
+            android:layout_height="240dp"
+            android:layout_marginTop="24dp"
             android:layout_gravity="center"
             android:layout_marginBottom="24dp"
-            android:scaleType="fitXY" />
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true" />
 
-        <!-- 2. Book Info Section -->
+        <!-- Book information container -->
         <LinearLayout
             android:id="@+id/bookDetails_layout_info"
             android:layout_width="match_parent"
@@ -34,16 +36,18 @@
             android:layout_marginBottom="24dp"
             android:elevation="2dp">
 
+            <!-- Title -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/bookDetails_LBL_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Book Name: ..."
+                android:text="@string/book_name"
                 android:textColor="@color/olive_green"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:layout_marginTop="4dp" />
 
+            <!-- Author, pages, genre, etc. -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/bookDetails_LBL_author"
                 android:layout_width="match_parent"
@@ -108,7 +112,7 @@
                 android:layout_marginTop="8dp" />
         </LinearLayout>
 
-        <!-- 3. Comments Section -->
+        <!-- Comment section including input and list -->
         <LinearLayout
             android:id="@+id/bookDetails_layout_comments"
             android:layout_width="match_parent"
@@ -118,6 +122,7 @@
             android:padding="16dp"
             android:elevation="2dp">
 
+            <!-- Section title -->
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,6 +132,7 @@
                 android:textSize="18sp"
                 android:layout_marginBottom="8dp" />
 
+            <!-- User input for comment (includes autofill + input type) -->
             <EditText
                 android:id="@+id/bookDetails_EDT_comment"
                 android:layout_width="match_parent"
@@ -134,8 +140,11 @@
                 android:hint="@string/write_a_comment"
                 android:backgroundTint="@color/olive_green"
                 android:textColor="@color/olive_green"
+                android:inputType="textMultiLine"
+                android:autofillHints="username"
                 android:layout_marginBottom="8dp" />
 
+            <!-- Submit comment button -->
             <Button
                 android:id="@+id/bookDetails_BTN_sendComment"
                 android:layout_width="wrap_content"
@@ -144,9 +153,11 @@
                 android:backgroundTint="@color/terracotta"
                 android:textColor="@color/olive_green"
                 android:layout_gravity="end"
+                android:minHeight="48dp"
+                android:paddingVertical="12dp"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Fixed-height RecyclerView to display comments -->
+            <!-- List of comments -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/bookDetails_RV_comments"
                 android:layout_width="match_parent"
@@ -154,9 +165,9 @@
                 android:layout_marginTop="8dp"
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never" />
-
         </LinearLayout>
 
+        <!-- Back button to return to previous screen -->
         <Button
             android:id="@+id/bookDetails_BTN_back"
             android:layout_width="wrap_content"
@@ -166,6 +177,8 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/terracotta"
+            android:minHeight="48dp"
+            android:paddingVertical="12dp"
             android:textColor="@color/olive_green" />
     </LinearLayout>
 

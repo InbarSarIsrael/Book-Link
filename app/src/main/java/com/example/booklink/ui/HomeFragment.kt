@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.booklink.R
 import com.example.booklink.adapters.BookAdapter
 import com.example.booklink.databinding.FragmentHomeBinding
 import com.example.booklink.interfaces.BookCallback
@@ -33,22 +34,28 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Start listening to live rating updates
         DataManager.listenToAverageRatings()
 
+        // Set up views and logic
         setupRecyclerView()
         setupAdapterCallbacks()
         setupSearchBar()
         setupWelcomeMessage()
 
+        // Load user-specific and general book data
         val userId = getCurrentUserId()
         DataManager.fetchUserFavorites(userId)
-
         DataManager.fetchAllBooks(userId)
+
+        // Observe book list and update adapter
         DataManager.allBooksData.observe(viewLifecycleOwner) { books ->
             bookAdapter.submitList(books)
         }
     }
 
+    // Initializes RecyclerView with vertical orientation and adapter
     private fun setupRecyclerView() {
         bookAdapter = BookAdapter()
         binding.mainRVList.apply {
@@ -57,6 +64,7 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // Handles interactions from the book adapter (favorites, rating, etc.)
     private fun setupAdapterCallbacks() {
         bookAdapter.bookCallback = object : BookCallback {
             override fun favoriteButtonClicked(book: Book, position: Int) {
@@ -73,11 +81,12 @@ class HomeFragment : Fragment() {
             }
 
             override fun editButtonClicked(book: Book) {
-                // Not used in ProfileFragment
+                // Not used in HomeFragment
             }
         }
     }
 
+    // Sets up live filtering based on the search bar input
     private fun setupSearchBar() {
         binding.homeEDTSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
@@ -89,12 +98,14 @@ class HomeFragment : Fragment() {
         })
     }
 
+    // Shows a welcome message using the user's display name
     private fun setupWelcomeMessage() {
         val user = FirebaseAuth.getInstance().currentUser
         val name = user?.displayName ?: "User"
-        binding.homeLBLWelcome.text = "Welcome, $name"
+        binding.homeLBLWelcome.text = getString(R.string.home_welcome_message, name)
     }
 
+    // Returns the current Firebase user ID
     private fun getCurrentUserId(): String {
         return FirebaseAuth.getInstance().currentUser?.uid ?: ""
     }

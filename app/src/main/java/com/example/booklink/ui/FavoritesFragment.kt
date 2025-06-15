@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 class FavoritesFragment : Fragment() {
 
     private var _binding: FragmentFavoritesBinding? = null
+
     private val binding get() = _binding!!
 
     private lateinit var bookAdapter: BookAdapter
@@ -30,19 +31,25 @@ class FavoritesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Start listening to average ratings in case they change
         DataManager.listenToAverageRatings()
 
+        // Set up RecyclerView and adapter callbacks
         setupRecyclerView()
         setupAdapterCallbacks()
 
-        val userId = getCurrentUserId() // Implement to get FirebaseAuth current user ID
+        // Fetch favorite books for the current user
+        val userId = getCurrentUserId()
         DataManager.fetchUserFavorites(userId)
 
+        // Observe favorite books and update the adapter when data changes
         DataManager.userFavoritesData.observe(viewLifecycleOwner) { favorites ->
             bookAdapter.submitList(favorites)
         }
     }
 
+    // Sets up RecyclerView with the BookAdapter
     private fun setupRecyclerView() {
         bookAdapter = BookAdapter()
         binding.favRVList.apply {
@@ -51,6 +58,7 @@ class FavoritesFragment : Fragment() {
         }
     }
 
+    // Defines what happens when the user interacts with each book item
     private fun setupAdapterCallbacks() {
         bookAdapter.bookCallback = object : BookCallback {
             override fun favoriteButtonClicked(book: Book, position: Int) {
@@ -65,11 +73,12 @@ class FavoritesFragment : Fragment() {
             }
 
             override fun editButtonClicked(book: Book) {
-                // Not used in ProfileFragment
+                // Not needed in FavoritesFragment
             }
         }
     }
 
+    // Returns the current logged-in Firebase user ID (or empty if not logged in)
     private fun getCurrentUserId(): String {
         val currentUser = FirebaseAuth.getInstance().currentUser
         return currentUser?.uid ?: ""

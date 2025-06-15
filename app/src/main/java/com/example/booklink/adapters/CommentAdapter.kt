@@ -8,6 +8,7 @@ import com.example.booklink.model.Comment
 import java.text.SimpleDateFormat
 import java.util.*
 
+// Adapter for displaying a list of user comments in a RecyclerView
 class CommentAdapter(private var comments: List<Comment>) :
     RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
@@ -22,22 +23,20 @@ class CommentAdapter(private var comments: List<Comment>) :
         holder.bind(comments[position])
     }
 
-    fun updateComments(newComments: List<Comment>) {
-        comments = newComments
-        notifyDataSetChanged()
-    }
-
+    // ViewHolder that binds a single comment item to the layout
     inner class CommentViewHolder(private val binding: CommentItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(comment: Comment) {
-            binding.commentLBLUsername.text = comment.username
-            binding.commentLBLText.text = comment.text
+            with(binding) {
+                commentLBLUsername.text = comment.username
+                commentLBLText.text = comment.text
 
-            val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-            val formattedDate = formatter.format(Date(comment.timestamp))
-            binding.commentLBLDate.text = formattedDate
+                // Format the timestamp to a readable date string
+                val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+                val formattedDate = formatter.format(Date(comment.timestamp))
+                commentLBLDate.text = formattedDate
+            }
         }
-
     }
 }

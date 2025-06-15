@@ -46,5 +46,9 @@
     <string name="username">Username</string>
     <string name="this_book_was_amazing">This book was amazing!</string>
     <string name="edit">Edit</string>
+    <string name="pages_format">%1$d pages</string>
+    <string name="update_book">Update Book</string>
+    <string name="home_welcome_message">Welcome, %1$s</string>
+    <string name="book_name">Book Name: ...</string>
 
 </resources>

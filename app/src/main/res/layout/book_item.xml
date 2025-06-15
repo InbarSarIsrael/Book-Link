@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <!-- Poster -->
+    <!-- Poster image card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/book_CV_poster"
         android:layout_width="120dp"
@@ -18,6 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Book poster image -->
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/book_IMG_poster"
             android:layout_width="match_parent"
@@ -26,7 +27,7 @@
             app:srcCompat="@drawable/ic_launcher_background" />
     </androidx.cardview.widget.CardView>
 
-    <!-- Data -->
+    <!-- Book info card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/book_CV_data"
         android:layout_width="0dp"
@@ -49,6 +50,7 @@
             android:paddingEnd="12dp"
             android:paddingBottom="8dp">
 
+            <!-- Book title -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/book_LBL_name"
                 android:layout_width="0dp"
@@ -62,8 +64,9 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Book Name" />
 
+            <!-- Author name -->
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/writer_LBL_name"
+                android:id="@+id/author_lbl_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/olive_green"
@@ -71,8 +74,9 @@
                 app:layout_constraintEnd_toEndOf="@id/book_LBL_name"
                 app:layout_constraintStart_toStartOf="@id/book_LBL_name"
                 app:layout_constraintTop_toBottomOf="@id/book_LBL_name"
-                tools:text="Writer Name" />
+                tools:text="Author Name" />
 
+            <!-- Book release date -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/book_LBL_releaseDate"
                 android:layout_width="wrap_content"
@@ -80,9 +84,10 @@
                 android:textColor="@color/saga_fern"
                 android:textSize="@dimen/data_text_size"
                 app:layout_constraintStart_toStartOf="@id/book_LBL_name"
-                app:layout_constraintTop_toBottomOf="@id/writer_LBL_name"
+                app:layout_constraintTop_toBottomOf="@id/author_lbl_name"
                 tools:text="2020-01-01" />
 
+            <!-- Page count -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/book_LBL_pages"
                 android:layout_width="wrap_content"
@@ -93,6 +98,7 @@
                 app:layout_constraintTop_toTopOf="@id/book_LBL_releaseDate"
                 tools:text="000 pages" />
 
+            <!-- Genres -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/book_LBL_genres"
                 android:layout_width="0dp"
@@ -105,6 +111,7 @@
                 app:layout_constraintTop_toBottomOf="@id/book_LBL_releaseDate"
                 tools:text="Genre1, Genre2, Genre3" />
 
+            <!-- Book summary -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/book_LBL_summary"
                 android:layout_width="0dp"
@@ -117,6 +124,7 @@
                 app:layout_constraintTop_toBottomOf="@id/book_LBL_genres"
                 tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit..." />
 
+            <!-- Rating bar -->
             <androidx.appcompat.widget.AppCompatRatingBar
                 android:id="@+id/movie_RB_rating"
                 android:layout_width="wrap_content"
@@ -132,6 +140,7 @@
                 app:layout_constraintStart_toStartOf="@id/book_LBL_name"
                 app:layout_constraintTop_toBottomOf="@id/book_LBL_summary" />
 
+            <!-- Numerical rating display -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/book_LBL_ratingValue"
                 android:layout_width="wrap_content"
@@ -142,7 +151,7 @@
                 app:layout_constraintTop_toBottomOf="@id/movie_RB_rating"
                 tools:text="5.0" />
 
-            <!-- Favorite heart -->
+            <!-- Favorite heart icon -->
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/book_IGM_favorite"
                 android:layout_width="24dp"

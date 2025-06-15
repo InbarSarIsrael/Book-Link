@@ -18,19 +18,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Force light mode (disable dark mode)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Upload sample books only if database is empty
         uploadInitialBooksIfEmpty()
 
-        // Show HomeFragment by default
+        // Show the HomeFragment when the app launches
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_fragment_container, HomeFragment())
             .commit()
 
-        // Handle bottom navigation
+        // Handle bottom navigation menu selection
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
@@ -65,6 +68,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        // If no user is signed in, redirect to login screen
         if (FirebaseAuth.getInstance().currentUser == null) {
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -72,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
+    // Uploads a predefined list of books to the database if it's empty
     private fun uploadInitialBooksIfEmpty() {
         val dbRef = FirebaseDatabase.getInstance().reference.child("books")
 
