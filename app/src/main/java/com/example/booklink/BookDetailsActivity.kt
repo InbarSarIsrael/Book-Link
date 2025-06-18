@@ -11,7 +11,9 @@ import com.example.booklink.model.Book
 import com.example.booklink.model.Comment
 import com.example.booklink.model.CommentManager
 import com.google.firebase.auth.FirebaseAuth
+import com.example.booklink.model.DataManager
 import com.google.firebase.database.FirebaseDatabase
+import java.util.Locale
 
 class BookDetailsActivity : AppCompatActivity() {
 
@@ -56,9 +58,12 @@ class BookDetailsActivity : AppCompatActivity() {
         binding.bookDetailsLBLPages.text = getString(R.string.pages_label, book.length)
         binding.bookDetailsLBLGenre.text = getString(R.string.genres_label, book.genre.joinToString(", "))
         binding.bookDetailsLBLRelease.text = getString(R.string.release_label, book.releaseDate)
-        binding.bookDetailsLBLRating.text = getString(R.string.rating_label, book.rating)
+        binding.bookDetailsLBLRatingValue.text = getString(R.string.loading)
         binding.bookDetailsLBLSummary.text = getString(R.string.summary_label, book.summary)
         binding.bookDetailsLBLUserReview.text = getString(R.string.review_label, book.userReview)
+
+        setupRating(book)
+        listenToRatingChanges(book.name)
 
         // Load book poster image using Glide
         Glide.with(this)
@@ -68,6 +73,58 @@ class BookDetailsActivity : AppCompatActivity() {
         // Use sanitized book name as ID key for comments
         bookId = book.name.replace(" ", "_")
         fetchComments(bookId)
+    }
+
+    private fun setupRating(book: Book) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val ratingBar = binding.bookDetailsLBLRating
+        val ratingValue = binding.bookDetailsLBLRatingValue
+
+        // Fetch and display average rating
+        DataManager.fetchAverageRating(book.name) { average ->
+            ratingBar.rating = average
+            ratingValue.text = String.format(Locale.getDefault(), "%.1f", average)
+        }
+
+        // Allow user to submit a new rating
+        ratingBar.setOnRatingBarChangeListener { _, rating, fromUser ->
+            if (fromUser && userId != null) {
+               DataManager.saveUserRating(userId, book.name, rating)
+                DataManager.updateAverageRating(book.name)
+
+               DataManager.fetchAverageRating(book.name) { average ->
+                    ratingBar.rating = average
+                    ratingValue.text = String.format(Locale.getDefault(), "%.1f", average)
+                }
+            }
+        }
+    }
+
+    private fun listenToRatingChanges(bookName: String) {
+        val ratingRef = FirebaseDatabase.getInstance()
+            .getReference("ratings")
+            .child(bookName)
+
+        ratingRef.addValueEventListener(object : com.google.firebase.database.ValueEventListener {
+            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+                var total = 0f
+                var count = 0
+                for (child in snapshot.children) {
+                    val rating = child.getValue(Float::class.java)
+                    if (rating != null) {
+                        total += rating
+                        count++
+                    }
+                }
+                val average = if (count > 0) total / count else 0f
+                binding.bookDetailsLBLRating.rating = average
+                binding.bookDetailsLBLRatingValue.text = String.format(Locale.getDefault(), "%.1f", average)
+            }
+
+            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {
+                Log.e("RatingListener", "Rating fetch cancelled: ${error.message}")
+            }
+        })
     }
 
     // Handle user comment submission

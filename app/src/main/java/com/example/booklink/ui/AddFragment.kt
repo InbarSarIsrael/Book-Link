@@ -148,10 +148,10 @@ class AddFragment : Fragment() {
         val userId = getCurrentUserId()
 
         // Upload image to Firebase before saving the book
-        uploadImageToFirebase { uploadedImageUrl ->
-            val posterUrl = uploadedImageUrl ?: ""
+            uploadImageToFirebase { uploadedImageUrl ->
+                val posterUrl = uploadedImageUrl ?: bookToEdit?.poster ?: ""
 
-            if (bookToEdit != null) {
+                if (bookToEdit != null) {
                 // Update existing book
                 val book = bookToEdit!!
                 book.name = name

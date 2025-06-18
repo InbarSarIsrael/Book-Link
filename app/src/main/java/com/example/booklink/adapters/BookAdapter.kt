@@ -8,12 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.booklink.BookDetailsActivity
 import com.example.booklink.databinding.BookItemBinding
 import com.example.booklink.interfaces.BookCallback
-import com.example.booklink.model.DataManager
 import com.example.booklink.R
 import com.example.booklink.model.Book
+import com.example.booklink.model.DataManager
 import com.example.booklink.utilities.Constants
 import com.example.booklink.utilities.ImageLoader
-import com.google.firebase.auth.FirebaseAuth
 import java.util.Locale
 import kotlin.math.max
 
@@ -85,33 +84,15 @@ class BookAdapter : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
                 )
             }
 
-            setupRating(book)
+            // Show only numeric rating
+            DataManager.fetchAverageRating(book.name) { average ->
+                binding.bookLBLRatingValue.text = String.format(Locale.getDefault(), "%.1f", average)
+            }
+
             setupExpansion(book)
             setupPosterClick(book)
         }
 
-        // Setup rating bar interactions and display average rating
-        private fun setupRating(book: Book) {
-            with(binding) {
-                movieRBRating.setOnRatingBarChangeListener { _, rating, fromUser ->
-                    if (fromUser) {
-                        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnRatingBarChangeListener
-                        DataManager.saveUserRating(userId, book.name, rating)
-                        DataManager.updateAverageRating(book.name)
-
-                        DataManager.fetchAverageRating(book.name) { average ->
-                            movieRBRating.rating = average
-                            bookLBLRatingValue.text = String.format(Locale.getDefault(), "%.1f", average)
-                        }
-                    }
-                }
-
-                DataManager.fetchAverageRating(book.name) { average ->
-                    movieRBRating.rating = average
-                    bookLBLRatingValue.text = String.format(Locale.getDefault(), "%.1f", average)
-                }
-            }
-        }
         // Toggle description expansion on card click
         private fun setupExpansion(book: Book) {
             with(binding) {

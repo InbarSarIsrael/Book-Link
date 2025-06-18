@@ -85,15 +85,6 @@
                 android:layout_marginTop="8dp" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/bookDetails_LBL_rating"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/rating"
-                android:textSize="15sp"
-                android:textColor="@color/olive_green"
-                android:layout_marginTop="8dp" />
-
-            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/bookDetails_LBL_summary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -110,6 +101,31 @@
                 android:textSize="15sp"
                 android:textColor="@color/olive_green"
                 android:layout_marginTop="8dp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/bookDetails_LBL_ratingValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/rating"
+                android:textSize="15sp"
+                android:textColor="@color/olive_green"
+                android:layout_marginTop="8dp" />
+
+            <!-- Rating bar -->
+            <androidx.appcompat.widget.AppCompatRatingBar
+                android:id="@+id/bookDetails_LBL_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/olive_green"
+                android:isIndicator="false"
+                android:numStars="5"
+                android:progressTint="@color/rating_first"
+                android:secondaryProgressTint="@color/rating_second"
+                android:stepSize="1"
+                app:layout_constraintStart_toStartOf="@id/book_LBL_name"
+                app:layout_constraintTop_toBottomOf="@id/book_LBL_summary" />
+
         </LinearLayout>
 
         <!-- Comment section including input and list -->

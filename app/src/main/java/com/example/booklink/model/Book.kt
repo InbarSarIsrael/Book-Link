@@ -3,9 +3,7 @@ package com.example.booklink.model
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-/**
- * Data model representing a book in the app
- */
+ // Data model representing a book in the app
 @Parcelize
 data class Book(
     var poster: String = "",           // URL to the book's cover image (hosted on Firebase Storage)
@@ -22,9 +20,7 @@ data class Book(
     var timestamp: Long = 0L           // Time of creation (used for sorting/display)
 ) : Parcelable {
 
-    /**
-     * Toggles the collapsed state of the summary section (for UI)
-     */
+     // Toggles the collapsed state of the summary section (for UI)
     fun toggleCollapse() {
         isCollapsed = !isCollapsed
     }

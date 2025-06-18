@@ -124,22 +124,6 @@
                 app:layout_constraintTop_toBottomOf="@id/book_LBL_genres"
                 tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit..." />
 
-            <!-- Rating bar -->
-            <androidx.appcompat.widget.AppCompatRatingBar
-                android:id="@+id/movie_RB_rating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/olive_green"
-                android:isIndicator="false"
-                android:numStars="5"
-                android:progressTint="@color/rating_first"
-                android:scaleX="0.5"
-                android:scaleY="0.5"
-                android:secondaryProgressTint="@color/rating_second"
-                android:stepSize="1"
-                app:layout_constraintStart_toStartOf="@id/book_LBL_name"
-                app:layout_constraintTop_toBottomOf="@id/book_LBL_summary" />
-
             <!-- Numerical rating display -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/book_LBL_ratingValue"
@@ -148,7 +132,7 @@
                 android:textColor="@color/olive_green"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="@id/book_LBL_name"
-                app:layout_constraintTop_toBottomOf="@id/movie_RB_rating"
+                app:layout_constraintTop_toBottomOf="@id/book_LBL_summary"
                 tools:text="5.0" />
 
             <!-- Favorite heart icon -->
